@@ -21,22 +21,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // Инициализирует автоматичесую БД с пользователями
     // Для ручной инициализации можно использовать - /employee/add?fullName=Иванов+Иван+Иванович&departament=1&salary=10000&fullName=Петров+Петр+Петрович&departament=2&salary=12000&fullName=Сидоров+Сидор+Сидорович&departament=3&salary=11000&fullName=Кузнецова+Анна+Сергеевна&departament=3&salary=15000&fullName=Смирнова+Ольга+Викторовна&departament=1&salary=13000&fullName=Ковалев+Алексей+Дмитриевич&departament=2&salary=14000&fullName=Федорова+Мария+Александровна&departament=5&salary=16000&fullName=Тихонов+Сергей+Валерьевич&departament=4&salary=11500&fullName=Попова+Екатерина+Павловна&departament=4&salary=12500&fullName=Григорьев+Артем+Юрьевич&departament=5&salary=17000
-    //    @Override
-    //    public String initEmployees() {
-    //        EMPLOYEE_LIST.addAll(List.of(
-    //                new Employee("Иванов Иван Иванович", 1, 10000),
-    //                new Employee("Петров Петр Петрович", 2, 12000),
-    //                new Employee("Сидоров Сидор Сидорович", 3, 11000),
-    //                new Employee("Кузнецова Анна Сергеевна", 3, 15000),
-    //                new Employee("Смирнова Ольга Викторовна", 1, 13000),
-    //                new Employee("Ковалев Алексей Дмитриевич", 2, 14000),
-    //                new Employee("Федорова Мария Александровна", 5, 16000),
-    //                new Employee("Тихонов Сергей Валерьевич", 4, 11500),
-    //                new Employee("Попова Екатерина Павловна", 4, 12500),
-    //                new Employee("Григорьев Артем Юрьевич", 5, 17000)
-    //        ));
-    //        return "Успешное инициализирование тестовых данных!";
-    //    }
+    @Override
+    public String initEmployees() {
+        EMPLOYEE_LIST.addAll(List.of(
+                new Employee("Иванов Иван Иванович", 1, 10000),
+                new Employee("Петров Петр Петрович", 2, 12000),
+                new Employee("Сидоров Сидор Сидорович", 3, 11000),
+                new Employee("Кузнецова Анна Сергеевна", 3, 15000),
+                new Employee("Смирнова Ольга Викторовна", 1, 13000),
+                new Employee("Ковалев Алексей Дмитриевич", 2, 14000),
+                new Employee("Федорова Мария Александровна", 5, 16000),
+                new Employee("Тихонов Сергей Валерьевич", 4, 11500),
+                new Employee("Попова Екатерина Павловна", 4, 12500),
+                new Employee("Григорьев Артем Юрьевич", 5, 17000)
+        ));
+        return "Успешное инициализирование тестовых данных!";
+    }
 
     @Override
     public List<String> printEmployees() {
@@ -87,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Optional<String> result = EMPLOYEE_LIST.stream()
                 .filter(employee -> employee.getID() == id)
-                .map(employee -> "Сотрудник был успешно найден: " + employee.toString())
+                .map(employee -> "Сотрудник был успешно найден: " + employee)
                 .findAny();
 
         return result.orElseThrow(() -> new EmployeeWasNotFound("Сотрудник с id " + id + " не найден!"));
