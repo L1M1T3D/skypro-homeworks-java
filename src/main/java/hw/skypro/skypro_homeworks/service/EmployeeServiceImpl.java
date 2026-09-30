@@ -87,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Optional<String> result = EMPLOYEE_LIST.stream()
                 .filter(employee -> employee.getID() == id)
-                .map(employee -> "Сотрудник был успешно найден: " + employee.toString())
+                .map(employee -> "Сотрудник был успешно найден: " + employee)
                 .findAny();
 
         return result.orElseThrow(() -> new EmployeeWasNotFound("Сотрудник с id " + id + " не найден!"));
