@@ -5,6 +5,7 @@ import hw.skypro.skypro_homeworks.model.Employee;
 import java.util.List;
 
 public interface EmployeeService {
+
     List<Employee> getEmployeeList();
 
     String initEmployees();

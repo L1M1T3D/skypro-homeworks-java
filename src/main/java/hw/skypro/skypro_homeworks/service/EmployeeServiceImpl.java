@@ -12,18 +12,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private final List<Employee> EMPLOYEE_LIST = new ArrayList<>();
+
+    private final List<Employee> employeeList = new ArrayList<>();
 
     @Override
     public List<Employee> getEmployeeList() {
-        return EMPLOYEE_LIST;
+        return List.copyOf(employeeList);
     }
 
-    // Инициализирует автоматичесую БД с пользователями
-    // Для ручной инициализации можно использовать - /employee/add?fullName=Иванов+Иван+Иванович&departament=1&salary=10000&fullName=Петров+Петр+Петрович&departament=2&salary=12000&fullName=Сидоров+Сидор+Сидорович&departament=3&salary=11000&fullName=Кузнецова+Анна+Сергеевна&departament=3&salary=15000&fullName=Смирнова+Ольга+Викторовна&departament=1&salary=13000&fullName=Ковалев+Алексей+Дмитриевич&departament=2&salary=14000&fullName=Федорова+Мария+Александровна&departament=5&salary=16000&fullName=Тихонов+Сергей+Валерьевич&departament=4&salary=11500&fullName=Попова+Екатерина+Павловна&departament=4&salary=12500&fullName=Григорьев+Артем+Юрьевич&departament=5&salary=17000
     @Override
     public String initEmployees() {
-        EMPLOYEE_LIST.addAll(List.of(
+        employeeList.addAll(List.of(
                 new Employee("Иванов Иван Иванович", 1, 10000),
                 new Employee("Петров Петр Петрович", 2, 12000),
                 new Employee("Сидоров Сидор Сидорович", 3, 11000),
@@ -35,61 +34,80 @@ public class EmployeeServiceImpl implements EmployeeService {
                 new Employee("Попова Екатерина Павловна", 4, 12500),
                 new Employee("Григорьев Артем Юрьевич", 5, 17000)
         ));
+
         return "Успешное инициализирование тестовых данных!";
     }
 
     @Override
     public List<String> printEmployees() {
-        return EMPLOYEE_LIST.stream()
+        return employeeList.stream()
                 .map(Employee::toString)
                 .collect(Collectors.toList());
     }
 
     @Override
-    // done
     public List<String> printFullNames() {
-        return EMPLOYEE_LIST.stream()
+        return employeeList.stream()
                 .map(Employee::getFullName)
                 .collect(Collectors.toList());
     }
 
     @Override
     public String addEmployees(List<Employee> employees) {
-        int countOfEmployees = EMPLOYEE_LIST.size();
+        int initialSize = employeeList.size();
 
         employees.stream()
-                .filter(employee -> EMPLOYEE_LIST.stream()
-                        .noneMatch(employeeExist -> Objects.equals(employee.getFullName(), employeeExist.getFullName())))
-                .forEach((EMPLOYEE_LIST::add));
+                .filter(employee -> employeeList.stream()
+                        .noneMatch(existingEmployee ->
+                                Objects.equals(
+                                        employee.getFullName(),
+                                        existingEmployee.getFullName()
+                                )
+                        )
+                )
+                .forEach(employeeList::add);
 
-        if (countOfEmployees == EMPLOYEE_LIST.size()) {
-            throw new RuntimeException("Введённый(-ые) сотрудники не были добавлены, так как они уже есть.");
+        int addedEmployees = employeeList.size() - initialSize;
+
+        if (addedEmployees == 0) {
+            throw new RuntimeException(
+                    "Введённый(-ые) сотрудники не были добавлены, так как они уже есть."
+            );
         }
 
-        return "Было добавлено " + (EMPLOYEE_LIST.size() - countOfEmployees) + " новых сотрудников из " + countOfEmployees + " введённых!";
+        return "Было добавлено " + addedEmployees
+                + " новых сотрудников из " + employees.size() + " введённых!";
     }
 
     @Override
     public String deleteEmployee(int id) {
-        Employee employee = EMPLOYEE_LIST.stream()
-                .filter(e -> e.getID() == id)
+        Employee employee = employeeList.stream()
+                .filter(currentEmployee -> currentEmployee.getId() == id)
                 .findFirst()
                 .orElseThrow(() ->
-                        new EmployeeWasNotFound("Сотрудник с id " + id + " не найден!"));
+                        new EmployeeWasNotFound(
+                                "Сотрудник с id " + id + " не найден!"
+                        )
+                );
 
-        EMPLOYEE_LIST.remove(employee);
+        employeeList.remove(employee);
 
-        return employee.toString() + " был успешно найден и удалён!";
+        return employee + " был успешно найден и удалён!";
     }
 
     @Override
     public String getEmployeeById(int id) {
+        Optional<String> result = employeeList.stream()
+                .filter(employee -> employee.getId() == id)
+                .map(employee ->
+                        "Сотрудник был успешно найден: " + employee
+                )
+                .findFirst();
 
-        Optional<String> result = EMPLOYEE_LIST.stream()
-                .filter(employee -> employee.getID() == id)
-                .map(employee -> "Сотрудник был успешно найден: " + employee)
-                .findAny();
-
-        return result.orElseThrow(() -> new EmployeeWasNotFound("Сотрудник с id " + id + " не найден!"));
+        return result.orElseThrow(() ->
+                new EmployeeWasNotFound(
+                        "Сотрудник с id " + id + " не найден!"
+                )
+        );
     }
 }
